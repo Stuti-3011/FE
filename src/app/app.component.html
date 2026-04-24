@@ -1,0 +1,9 @@
+<h1 class="app-title">E-Commerce</h1>
+
+<nav *ngIf="isLoggedIn()" class="nav-bar">
+  <a mat-button routerLink="/products">Products</a>
+  <a mat-button routerLink="/add">Add Product</a>
+  <button mat-raised-button color="warn" (click)="logout()">Logout</button>
+</nav>
+
+<router-outlet></router-outlet>

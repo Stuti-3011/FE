@@ -1,0 +1,19 @@
+<mat-card>
+  <h2>Register</h2>
+
+  <mat-form-field appearance="outline">
+    <input matInput placeholder="Email" [(ngModel)]="email">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <input matInput placeholder="Mobile" [(ngModel)]="mobile">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <input matInput type="password" placeholder="Password" [(ngModel)]="password">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="register()">
+    Register
+  </button>
+</mat-card>
