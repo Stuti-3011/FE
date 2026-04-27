@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   standalone: true,
-  imports: [FormsModule, MatCardModule, MatInputModule, MatButtonModule, MatTableModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   selector: 'app-login',
   templateUrl: './login.component.html'
 })
@@ -17,16 +19,36 @@ export class LoginComponent {
 
   username = '';
   password = '';
+  errorMessage = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute,
+    private auth: AuthService) {}
 
-login() {
-  this.http.post<any>('https://localhost:7228/api/Auth/login', {
-    username: this.username,
-    password: this.password
-  }).subscribe(res => {
-    localStorage.setItem('token', res.token);
-    this.router.navigate(['/products']);   // 
-  });
+  login() {
+    console.log('[LoginComponent] Login clicked with username:', this.username);
+    this.errorMessage = '';
+
+    if (!this.username || !this.password) {
+      this.errorMessage = 'Please enter username and password';
+      console.warn('[LoginComponent] Validation failed: missing credentials');
+      return;
+    }
+
+    this.http.post<any>('https://localhost:7228/api/Auth/login', {
+      username: this.username,
+      password: this.password
+    }).subscribe({
+      next: (res) => {
+        console.log('[LoginComponent] Login successful, token received');
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('role', res.role);
+        console.log('[LoginComponent] Stored token and role, navigating to /products');
+        this.router.navigate(['/products']);
+      },
+      error: (err) => {
+        console.error('[LoginComponent] Login failed:', err);
+        this.errorMessage = err.error?.message || 'Login failed. Please check your credentials.';
+      }
+    });
   }
 }
