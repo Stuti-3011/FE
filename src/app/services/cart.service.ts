@@ -27,7 +27,10 @@ export class CartService {
     return this.http.post(this.apiUrl, {
       productId,
       quantity: 1
-    }, { headers: this.getHeaders() }).pipe(
+    }, {
+      headers: this.getHeaders(),
+      responseType: 'text'
+    }).pipe(
       tap(() => this.refreshCartCount())
     );
   }
@@ -39,7 +42,19 @@ export class CartService {
   }
 
   remove(id: number) {
-    return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).pipe(
+    return this.http.delete(`${this.apiUrl}/${id}`, {
+      headers: this.getHeaders(),
+      responseType: 'text'
+    }).pipe(
+      tap(() => this.refreshCartCount())
+    );
+  }
+
+  updateQuantity(id: number, quantity: number) {
+    return this.http.put(`${this.apiUrl}/${id}`, { quantity }, {
+      headers: this.getHeaders(),
+      responseType: 'text'
+    }).pipe(
       tap(() => this.refreshCartCount())
     );
   }

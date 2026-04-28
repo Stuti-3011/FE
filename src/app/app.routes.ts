@@ -7,6 +7,7 @@ import { authGuard } from './guards/auth.guard';
 import { CartComponent } from './components/cart/cart.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { WishlistComponent } from './components/wishlist/wishlist.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', component: ProductListComponent },
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'cart', component: CartComponent },
   { path: 'wishlist', component: WishlistComponent },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
 
   { path: 'add', component: ProductFormComponent, canActivate: [authGuard] },
 

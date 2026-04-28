@@ -28,4 +28,19 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('token');
   }
+
+  getUsername(): string | null {
+    const token = this.getToken();
+
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.unique_name || payload.name || payload.sub || null;
+    } catch {
+      return null;
+    }
+  }
 }

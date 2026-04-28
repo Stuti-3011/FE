@@ -30,10 +30,10 @@ export class ProductService {
   }
 
   addProduct(formData: FormData) {
-  return this.http.post(this.apiUrl, formData);
-}
+    return this.http.post(this.apiUrl, formData, { responseType: 'text' });
+  }
 
   deleteProduct(id: number) {
-  return this.http.delete(`${this.apiUrl}/${id}`);  
-}
+    return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
+  }
 }

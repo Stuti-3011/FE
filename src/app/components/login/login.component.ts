@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   standalone: true,
@@ -22,7 +23,8 @@ export class LoginComponent {
   errorMessage = '';
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute,
-    private auth: AuthService) {}
+    private auth: AuthService,
+    private notification: NotificationService) {}
 
   login() {
     this.errorMessage = '';
@@ -40,11 +42,13 @@ export class LoginComponent {
       next: (res) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
+        this.notification.showSuccess('Logged in successfully');
         this.router.navigate(['/products']);
       },
       error: (err) => {
         console.error('[LoginComponent] Login failed:', err);
         this.errorMessage = err.error?.message || 'Login failed. Please check your credentials.';
+        this.notification.showError('Login failed');
       }
     });
   }

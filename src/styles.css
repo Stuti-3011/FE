@@ -4,6 +4,22 @@ body {
   margin: 0;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+.success-snackbar {
+  --mdc-snackbar-container-color: #166534 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #b91c1c !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+}
+
 .app-title {
   text-align: center;
   padding: 15px;

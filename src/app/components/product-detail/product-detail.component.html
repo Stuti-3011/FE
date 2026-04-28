@@ -4,6 +4,11 @@
   <mat-card class="detail-card">
     <div class="image-panel">
       <img [src]="'https://localhost:7228' + currentProduct.imageUrl" [alt]="currentProduct.name">
+      <div class="thumbnail-row">
+        <button type="button" class="thumb" *ngFor="let image of galleryImages">
+          <img [src]="'https://localhost:7228' + image" [alt]="currentProduct.name">
+        </button>
+      </div>
     </div>
 
     <div class="content-panel">
@@ -24,6 +29,7 @@
 
       <div class="actions">
         <button mat-raised-button color="primary" (click)="addToCart()">Add to Cart</button>
+        <button mat-stroked-button color="warn" (click)="addToWishlist()">Wishlist</button>
         <button mat-stroked-button routerLink="/cart">View Cart</button>
       </div>
     </div>

@@ -41,10 +41,22 @@
   </div>
 </section>
 
+<section class="filter-panel">
+  <mat-form-field appearance="outline">
+    <mat-label>Min Price</mat-label>
+    <input matInput type="number" [(ngModel)]="minPrice" (ngModelChange)="updatePriceFilter()">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Max Price</mat-label>
+    <input matInput type="number" [(ngModel)]="maxPrice" (ngModelChange)="updatePriceFilter()">
+  </mat-form-field>
+</section>
+
 <h2 class="title">Products</h2>
 
 <div class="product-grid">
-  <mat-card class="product-card" *ngFor="let p of products" (click)="openProduct(p.id)">
+  <mat-card class="product-card" *ngFor="let p of filteredProducts" (click)="openProduct(p.id)">
     <button mat-icon-button class="wishlist-button" (click)="toggleWishlist(p, $event)">
       <mat-icon>{{ isWishlisted(p.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
     </button>

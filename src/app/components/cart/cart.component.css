@@ -69,6 +69,19 @@
   font-weight: 700;
 }
 
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.quantity-control span {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 700;
+}
+
 .item-actions {
   display: flex;
   flex-direction: column;
@@ -95,6 +108,11 @@
   border-top: 1px solid #e5e7eb;
   font-size: 18px;
   font-weight: 700;
+}
+
+.checkout-button {
+  width: 100%;
+  margin-top: 18px;
 }
 
 .empty-card {

@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product';
+import { WishlistService } from '../../services/wishlist.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -16,12 +18,15 @@ import { Product } from '../../models/product';
   styleUrl: './product-detail.component.css'
 })
 export class ProductDetailComponent implements OnInit {
+  galleryImages: string[] = [];
   product?: Product;
 
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private wishlistService: WishlistService,
+    private notification: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -36,6 +41,7 @@ export class ProductDetailComponent implements OnInit {
     this.productService.getProductById(id).subscribe({
       next: (product) => {
         this.product = product;
+        this.galleryImages = [product.imageUrl, product.imageUrl, product.imageUrl].filter(Boolean) as string[];
       },
       error: (err) => {
         console.error('[ProductDetailComponent] Error loading product:', err);
@@ -50,11 +56,26 @@ export class ProductDetailComponent implements OnInit {
 
     this.cartService.addToCart(this.product.id).subscribe({
       next: () => {
-        alert(`${this.product?.name} added to cart successfully!`);
+        this.notification.showSuccess('Product added to cart');
       },
       error: (err) => {
         console.error('[ProductDetailComponent] Error adding product to cart:', err);
-        alert('Unable to add product to cart.');
+        this.notification.showError('Unable to add product to cart');
+      }
+    });
+  }
+
+  addToWishlist() {
+    if (!this.product?.id) {
+      return;
+    }
+
+    this.wishlistService.addToWishlist(this.product.id).subscribe({
+      next: () => {
+        this.notification.showSuccess('Added to wishlist');
+      },
+      error: () => {
+        this.notification.showError('Unable to add to wishlist');
       }
     });
   }

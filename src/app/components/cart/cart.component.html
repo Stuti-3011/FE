@@ -16,11 +16,19 @@
         <div class="item-details">
           <h3>{{ item.product.name }}</h3>
           <p class="item-price">Rs. {{ item.product.price }}</p>
-          <p>Quantity: {{ item.quantity }}</p>
+          <div class="quantity-control">
+            <button mat-icon-button (click)="changeQuantity(item, -1)">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span>{{ item.quantity }}</span>
+            <button mat-icon-button (click)="changeQuantity(item, 1)">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
         </div>
 
         <div class="item-actions">
-          <p class="item-total">Rs. {{ item.product.price * item.quantity }}</p>
+          <p class="item-total">Rs. {{ getSubtotal(item) }}</p>
           <button mat-button color="warn" (click)="removeItem(item.id)">Remove</button>
         </div>
       </mat-card>
@@ -36,6 +44,7 @@
         <span>Total</span>
         <span>Rs. {{ getTotalAmount() }}</span>
       </div>
+      <button mat-raised-button color="primary" class="checkout-button">Proceed to Checkout</button>
     </mat-card>
   </div>
 

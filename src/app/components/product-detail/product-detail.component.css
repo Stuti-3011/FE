@@ -25,6 +25,26 @@
   background: #eef2f7;
 }
 
+.thumbnail-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.thumb {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.thumb img {
+  width: 84px;
+  min-height: 84px;
+  height: 84px;
+  border-radius: 8px;
+}
+
 .content-panel {
   display: flex;
   flex-direction: column;

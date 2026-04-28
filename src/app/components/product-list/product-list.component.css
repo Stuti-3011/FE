@@ -6,6 +6,15 @@
   color: #12344d;
 }
 
+.filter-panel {
+  max-width: 1180px;
+  margin: 0 auto 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 220px));
+  gap: 16px;
+  align-items: center;
+}
+
 .hero-banner {
   max-width: 1180px;
   margin: 0 auto 28px;
@@ -192,6 +201,10 @@ mat-card-actions {
 }
 
 @media (max-width: 992px) {
+  .filter-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .hero-track {
     grid-template-columns: 1fr;
   }
@@ -213,6 +226,10 @@ mat-card-actions {
   .product-grid {
     grid-template-columns: 1fr;
     padding: 0 0 24px;
+  }
+
+  .filter-panel {
+    grid-template-columns: 1fr;
   }
 
   .hero-banner {

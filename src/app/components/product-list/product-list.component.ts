@@ -1,26 +1,34 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { MatIconModule } from '@angular/material/icon';
 import { WishlistService } from '../../services/wishlist.service';
 import { WishlistItem } from '../../models/wishlist-item';
+import { NotificationService } from '../../services/notification.service';
+import { ProductFilterService } from '../../services/product-filter.service';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatFormFieldModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'] 
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnDestroy {
   currentSlide = 0;
+  filteredProducts: Product[] = [];
+  maxAvailablePrice = 0;
+  maxPrice: number | null = null;
+  minPrice: number | null = null;
   products: Product[] = [];
   wishlistItems: WishlistItem[] = [];
   heroSlides = [
@@ -47,8 +55,20 @@ export class ProductListComponent implements OnInit {
     private auth: AuthService,
     private cartService: CartService,
     private wishlistService: WishlistService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private notification: NotificationService,
+    private productFilterService: ProductFilterService
+  ) {
+    this.productFilterService.searchTerm$.subscribe(() => this.applyFilters());
+    this.productFilterService.minPrice$.subscribe((value) => {
+      this.minPrice = value;
+      this.applyFilters();
+    });
+    this.productFilterService.maxPrice$.subscribe((value) => {
+      this.maxPrice = value;
+      this.applyFilters();
+    });
+  }
 
   isAdmin(): boolean {
     return this.auth.isAdmin();
@@ -70,6 +90,11 @@ export class ProductListComponent implements OnInit {
     this.productService.getProducts().subscribe({
       next: (data) => {
         this.products = data;
+        this.maxAvailablePrice = data.length ? Math.ceil(Math.max(...data.map((product) => Number(product.price)))) : 0;
+        if (this.maxPrice === null) {
+          this.maxPrice = this.maxAvailablePrice;
+        }
+        this.applyFilters();
       },
       error: (err) => {
         console.error('[ProductListComponent] Error loading products:', err);
@@ -107,11 +132,11 @@ export class ProductListComponent implements OnInit {
 
     this.cartService.addToCart(product.id).subscribe({
       next: () => {
-        alert(`${product.name} added to cart successfully!`);
+        this.notification.showSuccess('Product added to cart');
       },
       error: (err) => {
         console.error('[ProductListComponent] Error adding product to cart:', err);
-        alert('Unable to add product to cart.');
+        this.notification.showError('Unable to add product to cart');
       }
     });
   }
@@ -148,9 +173,11 @@ export class ProductListComponent implements OnInit {
       this.wishlistService.remove(existingItem.id).subscribe({
         next: () => {
           this.loadWishlist();
+          this.notification.showSuccess('Removed from wishlist');
         },
         error: (err) => {
           console.error('[ProductListComponent] Error removing wishlist item:', err);
+          this.notification.showError('Unable to update wishlist');
         }
       });
 
@@ -160,11 +187,17 @@ export class ProductListComponent implements OnInit {
     this.wishlistService.addToWishlist(product.id).subscribe({
       next: () => {
         this.loadWishlist();
+        this.notification.showSuccess('Added to wishlist');
       },
       error: (err) => {
         console.error('[ProductListComponent] Error adding wishlist item:', err);
+        this.notification.showError('Unable to update wishlist');
       }
     });
+  }
+
+  updatePriceFilter() {
+    this.productFilterService.setPriceRange(this.minPrice, this.maxPrice);
   }
 
   setSlide(index: number) {
@@ -193,5 +226,20 @@ export class ProductListComponent implements OnInit {
     }
 
     this.startSlider();
+  }
+
+  private applyFilters() {
+    const filters = this.productFilterService.getCurrentFilters();
+    const searchTerm = filters.searchTerm.trim().toLowerCase();
+
+    this.filteredProducts = this.products.filter((product) => {
+      const matchesSearch = !searchTerm
+        || product.name.toLowerCase().includes(searchTerm)
+        || product.description.toLowerCase().includes(searchTerm);
+      const matchesMin = filters.minPrice === null || Number(product.price) >= filters.minPrice;
+      const matchesMax = filters.maxPrice === null || Number(product.price) <= filters.maxPrice;
+
+      return matchesSearch && matchesMin && matchesMax;
+    });
   }
 }

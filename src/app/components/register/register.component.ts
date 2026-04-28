@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-register',
@@ -22,7 +23,11 @@ export class RegisterComponent {
   password = '';
   errorMessage = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private notification: NotificationService
+  ) {}
 
   register() {
     this.errorMessage = '';
@@ -36,14 +41,17 @@ export class RegisterComponent {
       email: this.email,
       mobile: this.mobile,
       password: this.password
+    }, {
+      responseType: 'text'
     }).subscribe({
       next: () => {
-        alert('Registered successfully');
+        this.notification.showSuccess('Registered successfully');
         this.router.navigate(['/login']);
       },
       error: (err) => {
         console.error('[RegisterComponent] Registration failed:', err);
         this.errorMessage = err.error?.message || 'Registration failed';
+        this.notification.showError('Registration failed');
       }
     });
   }

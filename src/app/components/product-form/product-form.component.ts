@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-product-form',
@@ -28,7 +29,11 @@ export class ProductFormComponent {
   selectedFile!: File;
   errorMessage = '';
 
-  constructor(private productService: ProductService, private router: Router) {}
+  constructor(
+    private productService: ProductService,
+    private router: Router,
+    private notification: NotificationService
+  ) {}
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
@@ -57,12 +62,13 @@ export class ProductFormComponent {
 
     this.productService.addProduct(formData).subscribe({
       next: () => {
-        alert('Product Added');
+        this.notification.showSuccess('Product added successfully');
         this.router.navigate(['/products']);
       },
       error: (err) => {
         console.error(err);
         this.errorMessage = 'Failed to add product';
+        this.notification.showError('Failed to add product');
       }
     });
   }

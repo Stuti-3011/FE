@@ -2,7 +2,10 @@
   <a class="logo" routerLink="/products">ShopEase</a>
 
   <div class="search-box">
-    <input placeholder="Search for products..." />
+    <input
+      [(ngModel)]="searchTerm"
+      (input)="onSearchChange()"
+      placeholder="Search for products..." />
   </div>
 
   <span class="spacer"></span>
