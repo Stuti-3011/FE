@@ -1,0 +1,49 @@
+<section class="cart-page">
+  <div class="cart-header">
+    <div>
+      <h2>Your Cart</h2>
+      <p *ngIf="cartItems.length">Review items before checkout.</p>
+      <p *ngIf="!cartItems.length">Your cart is empty.</p>
+    </div>
+    <button mat-stroked-button color="primary" routerLink="/products">Continue Shopping</button>
+  </div>
+
+  <div class="cart-layout" *ngIf="cartItems.length; else emptyState">
+    <div class="cart-items">
+      <mat-card class="cart-item-card" *ngFor="let item of cartItems">
+        <img [src]="'https://localhost:7228' + item.product.imageUrl" [alt]="item.product.name">
+
+        <div class="item-details">
+          <h3>{{ item.product.name }}</h3>
+          <p class="item-price">Rs. {{ item.product.price }}</p>
+          <p>Quantity: {{ item.quantity }}</p>
+        </div>
+
+        <div class="item-actions">
+          <p class="item-total">Rs. {{ item.product.price * item.quantity }}</p>
+          <button mat-button color="warn" (click)="removeItem(item.id)">Remove</button>
+        </div>
+      </mat-card>
+    </div>
+
+    <mat-card class="summary-card">
+      <h3>Order Summary</h3>
+      <div class="summary-row">
+        <span>Items</span>
+        <span>{{ cartItems.length }}</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span>Rs. {{ getTotalAmount() }}</span>
+      </div>
+    </mat-card>
+  </div>
+
+  <ng-template #emptyState>
+    <mat-card class="empty-card">
+      <h3>No products in cart yet</h3>
+      <p>Browse the catalog and add a few favorites.</p>
+      <button mat-raised-button color="primary" routerLink="/products">Shop Now</button>
+    </mat-card>
+  </ng-template>
+</section>

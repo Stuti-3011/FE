@@ -25,7 +25,6 @@ export class RegisterComponent {
   constructor(private http: HttpClient, private router: Router) {}
 
   register() {
-    console.log('[RegisterComponent] Register clicked');
     this.errorMessage = '';
 
     if (!this.email || !this.password) {
@@ -39,7 +38,6 @@ export class RegisterComponent {
       password: this.password
     }).subscribe({
       next: () => {
-        console.log('[RegisterComponent] Registration successful');
         alert('Registered successfully');
         this.router.navigate(['/login']);
       },

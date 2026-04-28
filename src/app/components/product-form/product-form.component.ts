@@ -32,11 +32,9 @@ export class ProductFormComponent {
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
-    console.log('[ProductFormComponent] File selected:', this.selectedFile);
   }
 
   submit() {
-    console.log('[ProductFormComponent] Submit clicked, product:', this.product);
     this.errorMessage = '';
 
     if (!this.product.name || !this.product.price) {

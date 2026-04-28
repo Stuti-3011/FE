@@ -1,36 +1,76 @@
+<section class="hero-banner">
+  <div class="hero-track">
+    <div class="hero-copy">
+      <p class="banner-tag">{{ heroSlides[currentSlide].tag }}</p>
+      <h1>{{ heroSlides[currentSlide].title }}</h1>
+      <p class="banner-copy">{{ heroSlides[currentSlide].copy }}</p>
+
+      <div class="hero-actions">
+        <button mat-raised-button color="accent" (click)="setSlide((currentSlide + 1) % heroSlides.length)">
+          Explore Now
+        </button>
+        <button mat-stroked-button class="hero-nav" (click)="previousSlide()">
+          Previous
+        </button>
+        <button mat-stroked-button class="hero-nav" (click)="nextSlide()">
+          Next
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="visual-card visual-primary">
+        <span>Top picks</span>
+        <strong>Stylish essentials</strong>
+      </div>
+      <div class="visual-card visual-secondary">
+        <span>Fast checkout</span>
+        <strong>Wishlist and cart in sync</strong>
+      </div>
+      <div class="hero-dots">
+        <button
+          type="button"
+          class="dot"
+          *ngFor="let slide of heroSlides; let i = index"
+          [class.active]="i === currentSlide"
+          (click)="setSlide(i)"
+          [attr.aria-label]="'Go to slide ' + (i + 1)">
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <h2 class="title">Products</h2>
 
 <div class="product-grid">
-  <mat-card class="product-card" *ngFor="let p of products">
+  <mat-card class="product-card" *ngFor="let p of products" (click)="openProduct(p.id)">
+    <button mat-icon-button class="wishlist-button" (click)="toggleWishlist(p, $event)">
+      <mat-icon>{{ isWishlisted(p.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
+    </button>
 
-<img 
-  [src]="'https://localhost:7228' + p.imageUrl"
-  alt="product"
-  width="200"
-  height="200"
-  style="object-fit: cover; border-radius: 10px;">
+    <img
+      [src]="'https://localhost:7228' + p.imageUrl"
+      alt="product"
+      width="200"
+      height="200">
 
-    <mat-card-content>  
+    <mat-card-content>
       <h3>{{ p.name }}</h3>
-      <p class="price">₹ {{ p.price }}</p>
+      <p class="price">Rs. {{ p.price }}</p>
       <p>{{ p.description }}</p>
     </mat-card-content>
 
     <mat-card-actions>
-
-      <!-- USER -->
-      <button mat-raised-button color="primary" (click)="addToCart(p)">
+      <button mat-raised-button color="primary" (click)="addToCart(p, $event)">
         Add to Cart
       </button>
 
-      <!-- ADMIN ONLY -->
-      <button *ngIf="isAdmin()" 
-              mat-button color="warn" 
-              (click)="delete(p.id!)">
+      <button *ngIf="isAdmin()"
+              mat-button color="warn"
+              (click)="delete(p.id!); $event.stopPropagation()">
         Delete
       </button>
-
     </mat-card-actions>
-
   </mat-card>
 </div>

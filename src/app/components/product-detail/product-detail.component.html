@@ -1,0 +1,31 @@
+<section class="detail-page" *ngIf="product as currentProduct">
+  <button mat-button routerLink="/products" class="back-link">Back to products</button>
+
+  <mat-card class="detail-card">
+    <div class="image-panel">
+      <img [src]="'https://localhost:7228' + currentProduct.imageUrl" [alt]="currentProduct.name">
+    </div>
+
+    <div class="content-panel">
+      <p class="eyebrow">Featured pick</p>
+      <h1>{{ currentProduct.name }}</h1>
+      <p class="price">Rs. {{ currentProduct.price }}</p>
+
+      <div class="rating">
+        <mat-icon>star</mat-icon>
+        <mat-icon>star</mat-icon>
+        <mat-icon>star</mat-icon>
+        <mat-icon>star</mat-icon>
+        <mat-icon>star_half</mat-icon>
+        <span>4.5 rating</span>
+      </div>
+
+      <p class="description">{{ currentProduct.description }}</p>
+
+      <div class="actions">
+        <button mat-raised-button color="primary" (click)="addToCart()">Add to Cart</button>
+        <button mat-stroked-button routerLink="/cart">View Cart</button>
+      </div>
+    </div>
+  </mat-card>
+</section>

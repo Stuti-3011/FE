@@ -25,8 +25,11 @@ export class ProductService {
     // return this.http.get<Product[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
+  getProductById(id: number) {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+  }
+
   addProduct(formData: FormData) {
-  console.log('[ProductService] Sending FormData');
   return this.http.post(this.apiUrl, formData);
 }
 

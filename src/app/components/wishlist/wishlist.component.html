@@ -1,0 +1,34 @@
+<section class="wishlist-page">
+  <div class="wishlist-header">
+    <div>
+      <h2>Wishlist</h2>
+      <p *ngIf="wishlistItems.length">Saved pieces you may want later.</p>
+      <p *ngIf="!wishlistItems.length">No items saved yet.</p>
+    </div>
+    <button mat-stroked-button color="primary" routerLink="/products">Discover Products</button>
+  </div>
+
+  <div class="wishlist-grid" *ngIf="wishlistItems.length; else emptyState">
+    <mat-card class="wishlist-card" *ngFor="let item of wishlistItems">
+      <img [src]="'https://localhost:7228' + item.product.imageUrl" [alt]="item.product.name" (click)="openProduct(item.productId)">
+
+      <mat-card-content>
+        <h3 (click)="openProduct(item.productId)">{{ item.product.name }}</h3>
+        <p class="price">Rs. {{ item.product.price }}</p>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="addToCart(item.productId, item.product.name)">Add to Cart</button>
+        <button mat-button color="warn" (click)="removeItem(item.id)">Remove</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <ng-template #emptyState>
+    <mat-card class="empty-card">
+      <h3>Your wishlist is empty</h3>
+      <p>Tap the heart on any product card to save it here.</p>
+      <button mat-raised-button color="primary" routerLink="/products">Browse Products</button>
+    </mat-card>
+  </ng-template>
+</section>

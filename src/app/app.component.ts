@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from './services/auth.service';
 import { MatIconModule } from '@angular/material/icon';   
 import { MatBadgeModule } from '@angular/material/badge'; 
+import { filter } from 'rxjs';
+import { CartService } from './services/cart.service';
+import { WishlistService } from './services/wishlist.service';
 
 @Component({
   selector: 'app-root',
@@ -22,29 +25,49 @@ import { MatBadgeModule } from '@angular/material/badge';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
-  constructor(private auth: AuthService) {
-    console.log('[AppComponent] Component initialized');
-    console.log('[AppComponent] isLoggedIn:', this.auth.isLoggedIn());
-    console.log('[AppComponent] isAdmin:', this.auth.isAdmin());
+export class AppComponent implements OnInit {
+  cartCount = 0;
+  wishlistCount = 0;
+
+  constructor(
+    private auth: AuthService,
+    private cartService: CartService,
+    private wishlistService: WishlistService,
+    private router: Router
+  ) {
+    this.cartService.cartCount$.subscribe((count) => {
+      this.cartCount = count;
+    });
+
+    this.wishlistService.wishlistCount$.subscribe((count) => {
+      this.wishlistCount = count;
+    });
+
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.refreshHeaderState();
+      });
   }
   showDropdown = false;
 
+  ngOnInit(): void {
+    this.refreshHeaderState();
+  }
+
   isLoggedIn(): boolean {
     const result = this.auth.isLoggedIn();
-    console.log('[AppComponent] isLoggedIn called, returning:', result);
     return result;
   }
 
   logout(): void {
-    console.log('[AppComponent] logout clicked');
     this.auth.logout();
-    console.log('[AppComponent] User logged out, redirecting to home');
+    this.refreshHeaderState();
+    this.router.navigate(['/products']);
   }
 
   isAdmin(): boolean {
     const result = this.auth.isAdmin();
-    console.log('[AppComponent] isAdmin called, returning:', result);
     return result;
   }
   toggleDropdown() {
@@ -53,5 +76,10 @@ export class AppComponent {
 
   goToProfile() {
     alert('Profile page coming soon');
+  }
+
+  private refreshHeaderState() {
+    this.cartService.refreshCartCount();
+    this.wishlistService.refreshWishlist();
   }
 }

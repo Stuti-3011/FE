@@ -25,7 +25,6 @@ export class LoginComponent {
     private auth: AuthService) {}
 
   login() {
-    console.log('[LoginComponent] Login clicked with username:', this.username);
     this.errorMessage = '';
 
     if (!this.username || !this.password) {
@@ -39,10 +38,8 @@ export class LoginComponent {
       password: this.password
     }).subscribe({
       next: (res) => {
-        console.log('[LoginComponent] Login successful, token received');
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
-        console.log('[LoginComponent] Stored token and role, navigating to /products');
         this.router.navigate(['/products']);
       },
       error: (err) => {

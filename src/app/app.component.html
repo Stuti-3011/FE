@@ -1,38 +1,27 @@
 <mat-toolbar color="primary" class="toolbar">
+  <a class="logo" routerLink="/products">ShopEase</a>
 
-  <!-- LOGO -->
-  <span class="logo">🛍️ ShopEase</span>
-
-  <!-- SEARCH BAR -->
   <div class="search-box">
     <input placeholder="Search for products..." />
   </div>
 
   <span class="spacer"></span>
 
-  <!-- NAV LINKS -->
   <button mat-button routerLink="/products">Products</button>
 
-  <!-- ADMIN -->
   <button mat-button *ngIf="isAdmin()" routerLink="/add">
     Add Product
   </button>
 
-  <!-- ICONS -->
   <div class="icons">
-
-    <!-- Wishlist -->
-    <button mat-icon-button>
+    <button mat-icon-button routerLink="/wishlist" [matBadge]="wishlistCount" [matBadgeHidden]="wishlistCount === 0" matBadgeColor="warn">
       <mat-icon>favorite_border</mat-icon>
     </button>
 
-    <!-- Cart -->
-    <button mat-icon-button>
+    <button mat-icon-button routerLink="/cart" [matBadge]="cartCount" [matBadgeHidden]="cartCount === 0" matBadgeColor="warn">
       <mat-icon>shopping_cart</mat-icon>
-      <span class="badge">2</span>
     </button>
 
-    <!-- PROFILE -->
     <div class="profile" *ngIf="isLoggedIn()" (click)="toggleDropdown()">
       <mat-icon>account_circle</mat-icon>
 
@@ -42,31 +31,23 @@
       </div>
     </div>
 
-    <!-- LOGIN -->
     <button mat-button *ngIf="!isLoggedIn()" routerLink="/login">
       Login
     </button>
-
   </div>
-
 </mat-toolbar>
 
 <div class="main-container">
   <router-outlet></router-outlet>
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
-
   <div class="footer-container">
-
-    <!-- BRAND -->
     <div class="footer-section">
-      <h3>🛍️ ShopEase</h3>
+      <h3>ShopEase</h3>
       <p>Your one-stop shop for all your needs.</p>
     </div>
 
-    <!-- LINKS -->
     <div class="footer-section">
       <h4>Quick Links</h4>
       <p>Home</p>
@@ -75,26 +56,22 @@
       <p>Contact</p>
     </div>
 
-    <!-- CONTACT -->
     <div class="footer-section">
       <h4>Contact Us</h4>
-      <p>📍 Valsad, Gujarat</p>
-      <p>📞 +91 98765 43210</p>
-      <p>📧 support&#64;shopease.com</p>
+      <p>Valsad, Gujarat</p>
+      <p>+91 98765 43210</p>
+      <p>support&#64;shopease.com</p>
     </div>
 
-    <!-- SOCIAL -->
     <div class="footer-section">
       <h4>Follow Us</h4>
       <p>Instagram</p>
       <p>Facebook</p>
       <p>Twitter</p>
     </div>
-
   </div>
 
   <div class="footer-bottom">
-    © 2026 ShopEase. All rights reserved.
+    Copyright 2026 ShopEase. All rights reserved.
   </div>
-
 </footer>
