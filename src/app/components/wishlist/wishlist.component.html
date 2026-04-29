@@ -10,15 +10,22 @@
 
   <div class="wishlist-grid" *ngIf="wishlistItems.length; else emptyState">
     <mat-card class="wishlist-card" *ngFor="let item of wishlistItems">
-      <img [src]="'https://localhost:7228' + item.product.imageUrl" [alt]="item.product.name" (click)="openProduct(item.productId)">
+      <button mat-icon-button class="heart-button" (click)="removeItem(item.id)" aria-label="Remove from wishlist">
+        <mat-icon>favorite</mat-icon>
+      </button>
+
+      <img [src]="getImage(item)" [alt]="item.product.name" (click)="openProduct(item.productId)">
 
       <mat-card-content>
         <h3 (click)="openProduct(item.productId)">{{ item.product.name }}</h3>
-        <p class="price">Rs. {{ item.product.price }}</p>
+        <p class="price">{{ item.product.price | currency:'INR':'symbol':'1.0-0' }}</p>
       </mat-card-content>
 
       <mat-card-actions>
-        <button mat-raised-button color="primary" (click)="addToCart(item.productId, item.product.name)">Move to Cart</button>
+        <button mat-raised-button color="primary" (click)="addToCart(item.productId, item.product.name)">
+          <mat-icon>shopping_cart</mat-icon>
+          Move to Cart
+        </button>
         <button mat-button color="warn" (click)="removeItem(item.id)">Remove</button>
       </mat-card-actions>
     </mat-card>

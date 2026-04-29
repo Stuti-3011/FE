@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from './services/auth.service';
 import { MatIconModule } from '@angular/material/icon';   
 import { MatBadgeModule } from '@angular/material/badge'; 
-import { filter } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 import { CartService } from './services/cart.service';
 import { WishlistService } from './services/wishlist.service';
 import { ProductFilterService } from './services/product-filter.service';
@@ -20,7 +20,7 @@ import { NotificationService } from './services/notification.service';
     RouterOutlet, 
     RouterLink, 
     CommonModule, 
-    FormsModule,
+    ReactiveFormsModule,
     MatToolbarModule, 
     MatButtonModule,
     MatIconModule,
@@ -31,8 +31,8 @@ import { NotificationService } from './services/notification.service';
 })
 export class AppComponent implements OnInit {
   cartCount = 0;
-  searchTerm = '';
   wishlistCount = 0;
+  searchControl = new FormControl('', { nonNullable: true });
 
   constructor(
     private auth: AuthService,
@@ -60,6 +60,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.refreshHeaderState();
+    this.searchControl.valueChanges
+      .pipe(debounceTime(200), distinctUntilChanged())
+      .subscribe((term) => this.productFilterService.setSearchTerm(term));
   }
 
   isLoggedIn(): boolean {
@@ -87,8 +90,8 @@ export class AppComponent implements OnInit {
     this.router.navigate(['/profile']);
   }
 
-  onSearchChange() {
-    this.productFilterService.setSearchTerm(this.searchTerm);
+  clearSearch() {
+    this.searchControl.setValue('');
   }
 
   private refreshHeaderState() {

@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../models/cart-item';
 import { NotificationService } from '../../services/notification.service';
+import { getProductImages } from '../../shared/product-images';
 
 @Component({
   selector: 'app-cart',
@@ -74,5 +75,9 @@ export class CartComponent implements OnInit {
 
   getSubtotal(item: CartItem): number {
     return item.product.price * item.quantity;
+  }
+
+  getImage(item: CartItem): string {
+    return getProductImages(item.product)[0];
   }
 }

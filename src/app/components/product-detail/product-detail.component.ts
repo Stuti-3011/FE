@@ -9,6 +9,7 @@ import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product';
 import { WishlistService } from '../../services/wishlist.service';
 import { NotificationService } from '../../services/notification.service';
+import { getProductImages } from '../../shared/product-images';
 
 @Component({
   selector: 'app-product-detail',
@@ -19,6 +20,7 @@ import { NotificationService } from '../../services/notification.service';
 })
 export class ProductDetailComponent implements OnInit {
   galleryImages: string[] = [];
+  selectedImage = '';
   product?: Product;
 
   constructor(
@@ -41,7 +43,8 @@ export class ProductDetailComponent implements OnInit {
     this.productService.getProductById(id).subscribe({
       next: (product) => {
         this.product = product;
-        this.galleryImages = [product.imageUrl, product.imageUrl, product.imageUrl].filter(Boolean) as string[];
+        this.galleryImages = getProductImages(product);
+        this.selectedImage = this.galleryImages[0];
       },
       error: (err) => {
         console.error('[ProductDetailComponent] Error loading product:', err);
@@ -78,5 +81,9 @@ export class ProductDetailComponent implements OnInit {
         this.notification.showError('Unable to add to wishlist');
       }
     });
+  }
+
+  selectImage(image: string) {
+    this.selectedImage = image;
   }
 }

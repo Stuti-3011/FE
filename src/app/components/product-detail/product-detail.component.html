@@ -1,20 +1,30 @@
 <section class="detail-page" *ngIf="product as currentProduct">
-  <button mat-button routerLink="/products" class="back-link">Back to products</button>
+  <button mat-button routerLink="/products" class="back-link">
+    <mat-icon>arrow_back</mat-icon>
+    Back to products
+  </button>
 
   <mat-card class="detail-card">
-    <div class="image-panel">
-      <img [src]="'https://localhost:7228' + currentProduct.imageUrl" [alt]="currentProduct.name">
-      <div class="thumbnail-row">
-        <button type="button" class="thumb" *ngFor="let image of galleryImages">
-          <img [src]="'https://localhost:7228' + image" [alt]="currentProduct.name">
+    <div class="gallery-panel">
+      <div class="thumbnail-column">
+        <button
+          type="button"
+          class="thumb"
+          *ngFor="let image of galleryImages"
+          [class.active]="image === selectedImage"
+          (click)="selectImage(image)">
+          <img [src]="image" [alt]="currentProduct.name">
         </button>
+      </div>
+
+      <div class="image-panel">
+        <img [src]="selectedImage" [alt]="currentProduct.name">
       </div>
     </div>
 
     <div class="content-panel">
       <p class="eyebrow">Featured pick</p>
       <h1>{{ currentProduct.name }}</h1>
-      <p class="price">Rs. {{ currentProduct.price }}</p>
 
       <div class="rating">
         <mat-icon>star</mat-icon>
@@ -25,11 +35,37 @@
         <span>4.5 rating</span>
       </div>
 
+      <div class="price-row">
+        <p class="price">{{ currentProduct.price | currency:'INR':'symbol':'1.0-0' }}</p>
+        <span class="discount">Best price today</span>
+      </div>
+
       <p class="description">{{ currentProduct.description }}</p>
 
+      <div class="info-strip">
+        <div>
+          <mat-icon>local_shipping</mat-icon>
+          Fast delivery
+        </div>
+        <div>
+          <mat-icon>verified</mat-icon>
+          Quality checked
+        </div>
+        <div>
+          <mat-icon>inventory</mat-icon>
+          {{ currentProduct.stock }} in stock
+        </div>
+      </div>
+
       <div class="actions">
-        <button mat-raised-button color="primary" (click)="addToCart()">Add to Cart</button>
-        <button mat-stroked-button color="warn" (click)="addToWishlist()">Wishlist</button>
+        <button mat-raised-button color="primary" (click)="addToCart()">
+          <mat-icon>shopping_cart</mat-icon>
+          Add to Cart
+        </button>
+        <button mat-stroked-button color="warn" (click)="addToWishlist()">
+          <mat-icon>favorite_border</mat-icon>
+          Wishlist
+        </button>
         <button mat-stroked-button routerLink="/cart">View Cart</button>
       </div>
     </div>

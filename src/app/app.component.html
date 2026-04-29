@@ -1,40 +1,48 @@
 <mat-toolbar color="primary" class="toolbar">
   <a class="logo" routerLink="/products">ShopEase</a>
 
-  <div class="search-box">
+  <label class="search-box" aria-label="Search products">
+    <mat-icon>search</mat-icon>
     <input
-      [(ngModel)]="searchTerm"
-      (input)="onSearchChange()"
+      [formControl]="searchControl"
       placeholder="Search for products..." />
-  </div>
+    <button
+      *ngIf="searchControl.value"
+      type="button"
+      class="clear-search"
+      aria-label="Clear search"
+      (click)="clearSearch()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </label>
 
   <span class="spacer"></span>
 
-  <button mat-button routerLink="/products">Products</button>
+  <button mat-button class="nav-link" routerLink="/products">Products</button>
 
-  <button mat-button *ngIf="isAdmin()" routerLink="/add">
+  <button mat-button class="nav-link" *ngIf="isAdmin()" routerLink="/add">
     Add Product
   </button>
 
   <div class="icons">
-    <button mat-icon-button routerLink="/wishlist" [matBadge]="wishlistCount" [matBadgeHidden]="wishlistCount === 0" matBadgeColor="warn">
+    <button mat-icon-button class="icon-button" routerLink="/wishlist" [matBadge]="wishlistCount" [matBadgeHidden]="wishlistCount === 0" matBadgeColor="warn" aria-label="Wishlist">
       <mat-icon>favorite_border</mat-icon>
     </button>
 
-    <button mat-icon-button routerLink="/cart" [matBadge]="cartCount" [matBadgeHidden]="cartCount === 0" matBadgeColor="warn">
+    <button mat-icon-button class="icon-button" routerLink="/cart" [matBadge]="cartCount" [matBadgeHidden]="cartCount === 0" matBadgeColor="warn" aria-label="Cart">
       <mat-icon>shopping_cart</mat-icon>
     </button>
 
-    <div class="profile" *ngIf="isLoggedIn()" (click)="toggleDropdown()">
+    <button type="button" class="profile" *ngIf="isLoggedIn()" (click)="toggleDropdown()" aria-label="Open profile menu">
       <mat-icon>account_circle</mat-icon>
 
       <div class="dropdown" *ngIf="showDropdown">
-        <button (click)="goToProfile()">Profile</button>
-        <button (click)="logout()">Logout</button>
+        <button type="button" (click)="goToProfile()">Profile</button>
+        <button type="button" (click)="logout()">Logout</button>
       </div>
-    </div>
+    </button>
 
-    <button mat-button *ngIf="!isLoggedIn()" routerLink="/login">
+    <button mat-button class="login-button" *ngIf="!isLoggedIn()" routerLink="/login">
       Login
     </button>
   </div>

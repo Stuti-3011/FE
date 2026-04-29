@@ -11,11 +11,11 @@
   <div class="cart-layout" *ngIf="cartItems.length; else emptyState">
     <div class="cart-items">
       <mat-card class="cart-item-card" *ngFor="let item of cartItems">
-        <img [src]="'https://localhost:7228' + item.product.imageUrl" [alt]="item.product.name">
+        <img [src]="getImage(item)" [alt]="item.product.name">
 
         <div class="item-details">
           <h3>{{ item.product.name }}</h3>
-          <p class="item-price">Rs. {{ item.product.price }}</p>
+          <p class="item-price">{{ item.product.price | currency:'INR':'symbol':'1.0-0' }}</p>
           <div class="quantity-control">
             <button mat-icon-button (click)="changeQuantity(item, -1)">
               <mat-icon>remove</mat-icon>
@@ -28,7 +28,7 @@
         </div>
 
         <div class="item-actions">
-          <p class="item-total">Rs. {{ getSubtotal(item) }}</p>
+          <p class="item-total">{{ getSubtotal(item) | currency:'INR':'symbol':'1.0-0' }}</p>
           <button mat-button color="warn" (click)="removeItem(item.id)">Remove</button>
         </div>
       </mat-card>
@@ -40,9 +40,13 @@
         <span>Items</span>
         <span>{{ cartItems.length }}</span>
       </div>
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>{{ getTotalAmount() | currency:'INR':'symbol':'1.0-0' }}</span>
+      </div>
       <div class="summary-row total">
         <span>Total</span>
-        <span>Rs. {{ getTotalAmount() }}</span>
+        <span>{{ getTotalAmount() | currency:'INR':'symbol':'1.0-0' }}</span>
       </div>
       <button mat-raised-button color="primary" class="checkout-button">Proceed to Checkout</button>
     </mat-card>

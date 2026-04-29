@@ -3,15 +3,17 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { WishlistService } from '../../services/wishlist.service';
 import { CartService } from '../../services/cart.service';
 import { WishlistItem } from '../../models/wishlist-item';
 import { NotificationService } from '../../services/notification.service';
+import { getProductImages } from '../../shared/product-images';
 
 @Component({
   selector: 'app-wishlist',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule],
+  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './wishlist.component.html',
   styleUrl: './wishlist.component.css'
 })
@@ -67,5 +69,9 @@ export class WishlistComponent implements OnInit {
 
   openProduct(productId: number) {
     this.router.navigate(['/product', productId]);
+  }
+
+  getImage(item: WishlistItem): string {
+    return getProductImages(item.product)[0];
   }
 }

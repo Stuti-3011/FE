@@ -10,22 +10,19 @@
           Explore Now
         </button>
         <button mat-stroked-button class="hero-nav" (click)="previousSlide()">
-          Previous
+          <mat-icon>chevron_left</mat-icon>
         </button>
         <button mat-stroked-button class="hero-nav" (click)="nextSlide()">
-          Next
+          <mat-icon>chevron_right</mat-icon>
         </button>
       </div>
     </div>
 
     <div class="hero-visual">
-      <div class="visual-card visual-primary">
-        <span>Top picks</span>
-        <strong>Stylish essentials</strong>
-      </div>
-      <div class="visual-card visual-secondary">
-        <span>Fast checkout</span>
-        <strong>Wishlist and cart in sync</strong>
+      <div class="deal-card">
+        <span>Premium picks</span>
+        <strong>Up to 40% off</strong>
+        <small>Limited launch edit</small>
       </div>
       <div class="hero-dots">
         <button
@@ -42,35 +39,57 @@
 </section>
 
 <section class="filter-panel">
-  <mat-form-field appearance="outline">
-    <mat-label>Min Price</mat-label>
-    <input matInput type="number" [(ngModel)]="minPrice" (ngModelChange)="updatePriceFilter()">
-  </mat-form-field>
+  <div>
+    <p class="section-kicker">Curated catalog</p>
+    <h2>Shop products</h2>
+  </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Max Price</mat-label>
-    <input matInput type="number" [(ngModel)]="maxPrice" (ngModelChange)="updatePriceFilter()">
-  </mat-form-field>
+  <div class="filter-controls">
+    <mat-form-field appearance="outline">
+      <mat-label>Min Price</mat-label>
+      <input matInput type="number" [(ngModel)]="minPrice" (ngModelChange)="updatePriceFilter()">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Max Price</mat-label>
+      <input matInput type="number" [(ngModel)]="maxPrice" (ngModelChange)="updatePriceFilter()">
+    </mat-form-field>
+  </div>
 </section>
 
-<h2 class="title">Products</h2>
+<div class="product-grid skeleton-grid" *ngIf="isLoading">
+  <article class="skeleton-card" *ngFor="let item of [1, 2, 3, 4, 5, 6]">
+    <div class="skeleton image"></div>
+    <div class="skeleton line wide"></div>
+    <div class="skeleton line"></div>
+    <div class="skeleton button"></div>
+  </article>
+</div>
 
-<div class="product-grid">
-  <mat-card class="product-card" *ngFor="let p of filteredProducts" (click)="openProduct(p.id)">
-    <button mat-icon-button class="wishlist-button" (click)="toggleWishlist(p, $event)">
+<div class="product-grid" *ngIf="!isLoading && filteredProducts.length">
+  <mat-card class="product-card" *ngFor="let p of filteredProducts" (click)="openProduct(p.id)" @fadeInUp>
+    <div class="image-wrap">
+      <img [src]="getImage(p)" [alt]="p.name">
+      <div class="quick-overlay">
+        <button mat-raised-button color="primary" (click)="addToCart(p, $event)">
+          <mat-icon>shopping_bag</mat-icon>
+          Add
+        </button>
+        <button mat-icon-button class="quick-heart" (click)="toggleWishlist(p, $event)" aria-label="Toggle wishlist">
+          <mat-icon>{{ isWishlisted(p.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <button mat-icon-button class="wishlist-button" [class.active]="isWishlisted(p.id)" (click)="toggleWishlist(p, $event)" aria-label="Toggle wishlist">
       <mat-icon>{{ isWishlisted(p.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
     </button>
 
-    <img
-      [src]="'https://localhost:7228' + p.imageUrl"
-      alt="product"
-      width="200"
-      height="200">
-
     <mat-card-content>
+      <p class="stock-chip">{{ p.stock > 0 ? 'In stock' : 'Out of stock' }}</p>
       <h3>{{ p.name }}</h3>
-      <p class="price">Rs. {{ p.price }}</p>
-      <p>{{ p.description }}</p>
+      <p class="description">{{ p.description }}</p>
+      <p class="price">{{ p.price | currency:'INR':'symbol':'1.0-0' }}</p>
     </mat-card-content>
 
     <mat-card-actions>
@@ -86,3 +105,12 @@
     </mat-card-actions>
   </mat-card>
 </div>
+
+<mat-card class="empty-state" *ngIf="!isLoading && !filteredProducts.length">
+  <mat-icon>inventory_2</mat-icon>
+  <h3>No products found</h3>
+  <p>Try changing the search or price filters.</p>
+  <button mat-raised-button color="primary" (click)="minPrice = null; maxPrice = maxAvailablePrice; updatePriceFilter()">
+    Reset Filters
+  </button>
+</mat-card>

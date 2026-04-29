@@ -15,17 +15,28 @@ import { WishlistService } from '../../services/wishlist.service';
 import { WishlistItem } from '../../models/wishlist-item';
 import { NotificationService } from '../../services/notification.service';
 import { ProductFilterService } from '../../services/product-filter.service';
+import { getProductImages } from '../../shared/product-images';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
   imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule],
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.css'] 
+  styleUrls: ['./product-list.component.css'],
+  animations: [
+    trigger('fadeInUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(14px)' }),
+        animate('220ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ])
+  ]
 })
 export class ProductListComponent implements OnInit, OnDestroy {
   currentSlide = 0;
   filteredProducts: Product[] = [];
+  isLoading = true;
   maxAvailablePrice = 0;
   maxPrice: number | null = null;
   minPrice: number | null = null;
@@ -87,6 +98,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   loadProducts() {
+    this.isLoading = true;
     this.productService.getProducts().subscribe({
       next: (data) => {
         this.products = data;
@@ -95,9 +107,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
           this.maxPrice = this.maxAvailablePrice;
         }
         this.applyFilters();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('[ProductListComponent] Error loading products:', err);
+        this.isLoading = false;
+        this.notification.showError('Unable to load products');
       }
     });
   }
@@ -198,6 +213,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   updatePriceFilter() {
     this.productFilterService.setPriceRange(this.minPrice, this.maxPrice);
+  }
+
+  getImage(product: Product): string {
+    return getProductImages(product)[0];
   }
 
   setSlide(index: number) {
