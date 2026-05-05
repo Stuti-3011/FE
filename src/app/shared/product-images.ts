@@ -20,7 +20,18 @@ export function getProductImages(product?: Product): string[] {
     return [PRODUCT_FALLBACK_IMAGE];
   }
 
+  const linkedImages = [...(product.productImages ?? [])]
+    .sort((first, second) => {
+      if (first.isPrimary !== second.isPrimary) {
+        return first.isPrimary ? -1 : 1;
+      }
+
+      return first.displayOrder - second.displayOrder;
+    })
+    .map((image) => image.imageUrl);
+
   const urls = [
+    ...linkedImages,
     ...(product.imageUrls ?? []),
     ...splitImageUrls(product.imageUrl)
   ]

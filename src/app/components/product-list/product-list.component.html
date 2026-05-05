@@ -70,10 +70,14 @@
   <mat-card class="product-card" *ngFor="let p of filteredProducts" (click)="openProduct(p.id)" @fadeInUp>
     <div class="image-wrap">
       <img [src]="getImage(p)" [alt]="p.name">
+      <span class="gallery-count" *ngIf="getGalleryCount(p) > 1">
+        <mat-icon>collections</mat-icon>
+        {{ getGalleryCount(p) }}
+      </span>
       <div class="quick-overlay">
         <button mat-raised-button color="primary" (click)="addToCart(p, $event)">
           <mat-icon>shopping_bag</mat-icon>
-          Add
+          {{ requiresSizeSelection(p) ? 'Choose Size' : 'Add' }}
         </button>
         <button mat-icon-button class="quick-heart" (click)="toggleWishlist(p, $event)" aria-label="Toggle wishlist">
           <mat-icon>{{ isWishlisted(p.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
@@ -89,12 +93,13 @@
       <p class="stock-chip">{{ p.stock > 0 ? 'In stock' : 'Out of stock' }}</p>
       <h3>{{ p.name }}</h3>
       <p class="description">{{ p.description }}</p>
+      <p class="size-summary">{{ getSizeSummary(p) }}</p>
       <p class="price">{{ p.price | currency:'INR':'symbol':'1.0-0' }}</p>
     </mat-card-content>
 
     <mat-card-actions>
       <button mat-raised-button color="primary" (click)="addToCart(p, $event)">
-        Add to Cart
+        {{ requiresSizeSelection(p) ? 'Select Size' : 'Add to Cart' }}
       </button>
 
       <button *ngIf="isAdmin()"

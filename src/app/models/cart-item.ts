@@ -5,5 +5,6 @@ export interface CartItem {
   username: string;
   productId: number;
   quantity: number;
+  selectedSize?: string | null;
   product: Product;
 }

@@ -23,10 +23,11 @@ export class CartService {
     });
   }
 
-  addToCart(productId: number) {
+  addToCart(productId: number, selectedSize?: string) {
     return this.http.post(this.apiUrl, {
       productId,
-      quantity: 1
+      quantity: 1,
+      selectedSize: selectedSize || null
     }, {
       headers: this.getHeaders(),
       responseType: 'text'

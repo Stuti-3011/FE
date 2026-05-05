@@ -16,6 +16,7 @@ import { WishlistItem } from '../../models/wishlist-item';
 import { NotificationService } from '../../services/notification.service';
 import { ProductFilterService } from '../../services/product-filter.service';
 import { getProductImages } from '../../shared/product-images';
+import { getProductSizes } from '../../shared/product-sizes';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -103,8 +104,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.products = data;
         this.maxAvailablePrice = data.length ? Math.ceil(Math.max(...data.map((product) => Number(product.price)))) : 0;
-        if (this.maxPrice === null) {
+        if (this.maxPrice === null || (this.maxAvailablePrice > 0 && (this.maxPrice ?? 0) <= 0)) {
           this.maxPrice = this.maxAvailablePrice;
+          this.productFilterService.setPriceRange(this.minPrice, this.maxPrice);
         }
         this.applyFilters();
         this.isLoading = false;
@@ -145,13 +147,19 @@ export class ProductListComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.requiresSizeSelection(product)) {
+      this.notification.showError('Select a size on the product page before adding this item to cart');
+      this.router.navigate(['/product', product.id]);
+      return;
+    }
+
     this.cartService.addToCart(product.id).subscribe({
       next: () => {
         this.notification.showSuccess('Product added to cart');
       },
       error: (err) => {
         console.error('[ProductListComponent] Error adding product to cart:', err);
-        this.notification.showError('Unable to add product to cart');
+        this.notification.showError(err?.error?.message || 'Unable to add product to cart');
       }
     });
   }
@@ -219,6 +227,24 @@ export class ProductListComponent implements OnInit, OnDestroy {
     return getProductImages(product)[0];
   }
 
+  getSizeSummary(product: Product): string {
+    const sizes = getProductSizes(product);
+
+    if (!sizes.length) {
+      return 'One size';
+    }
+
+    return sizes.join(' • ');
+  }
+
+  getGalleryCount(product: Product): number {
+    return getProductImages(product).length;
+  }
+
+  requiresSizeSelection(product: Product): boolean {
+    return getProductSizes(product).length > 0;
+  }
+
   setSlide(index: number) {
     this.currentSlide = index;
     this.restartSlider();
@@ -252,9 +278,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
     const searchTerm = filters.searchTerm.trim().toLowerCase();
 
     this.filteredProducts = this.products.filter((product) => {
+      const productName = product.name?.toLowerCase() ?? '';
+      const productDescription = product.description?.toLowerCase() ?? '';
       const matchesSearch = !searchTerm
-        || product.name.toLowerCase().includes(searchTerm)
-        || product.description.toLowerCase().includes(searchTerm);
+        || productName.includes(searchTerm)
+        || productDescription.includes(searchTerm);
       const matchesMin = filters.minPrice === null || Number(product.price) >= filters.minPrice;
       const matchesMax = filters.maxPrice === null || Number(product.price) <= filters.maxPrice;
 

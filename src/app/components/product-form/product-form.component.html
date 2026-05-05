@@ -12,17 +12,26 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Product Name</mat-label>
       <input matInput formControlName="name" required>
+      <mat-error *ngIf="productForm.controls.name.touched && productForm.controls.name.invalid">
+        Product name is required
+      </mat-error>
     </mat-form-field>
 
     <div class="form-grid">
       <mat-form-field appearance="outline">
         <mat-label>Price</mat-label>
         <input matInput type="number" formControlName="price" required>
+        <mat-error *ngIf="productForm.controls.price.touched && productForm.controls.price.invalid">
+          Enter a valid price
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Stock</mat-label>
         <input matInput type="number" formControlName="stock" required>
+        <mat-error *ngIf="productForm.controls.stock.touched && productForm.controls.stock.invalid">
+          Enter a valid stock value
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -31,19 +40,85 @@
       <textarea matInput rows="4" formControlName="description"></textarea>
     </mat-form-field>
 
-    <label class="upload-zone">
-      <mat-icon>add_photo_alternate</mat-icon>
-      <strong>Upload product images</strong>
-      <span>Choose up to {{ maxImages }} images. The first image remains the main product image.</span>
-      <input type="file" accept="image/*" multiple (change)="onFileSelected($event)">
-    </label>
-
-    <div class="preview-grid" *ngIf="imagePreviews.length">
-      <div class="preview" *ngFor="let preview of imagePreviews; let i = index">
-        <img [src]="preview" alt="Selected product preview">
-        <span *ngIf="i === 0">Main</span>
+    <section class="section-block">
+      <div class="section-header">
+        <div>
+          <h3>Product Images</h3>
+          <p>Upload at least 1 image and choose a primary image for listings and cart.</p>
+        </div>
+        <span class="count-pill">{{ selectedImages.length }}/{{ maxImages }}</span>
       </div>
-    </div>
+
+      <label class="upload-zone">
+        <mat-icon>add_photo_alternate</mat-icon>
+        <strong>Upload product images</strong>
+        <span>Choose up to {{ maxImages }} images and reorder them before saving.</span>
+        <input type="file" accept="image/*" multiple (change)="onFileSelected($event)">
+      </label>
+
+      <div class="preview-grid" *ngIf="selectedImages.length">
+        <div class="preview" *ngFor="let image of selectedImages; let i = index; trackBy: trackByPreview">
+          <img [src]="image.preview" alt="Selected product preview">
+          <div class="preview-actions">
+            <button type="button" mat-icon-button (click)="moveImage(i, -1)" [disabled]="i === 0" aria-label="Move image left">
+              <mat-icon>west</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="moveImage(i, 1)" [disabled]="i === selectedImages.length - 1" aria-label="Move image right">
+              <mat-icon>east</mat-icon>
+            </button>
+            <button type="button" mat-icon-button color="warn" (click)="removeImage(i)" aria-label="Remove image">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="primary-toggle"
+            [class.active]="i === primaryImageIndex"
+            (click)="setPrimaryImage(i)">
+            <mat-icon>{{ i === primaryImageIndex ? 'star' : 'star_border' }}</mat-icon>
+            {{ i === primaryImageIndex ? 'Primary' : 'Set primary' }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-header">
+        <div>
+          <h3>Available Sizes</h3>
+          <p>Select standard sizes and add custom values when needed.</p>
+        </div>
+      </div>
+
+      <div class="size-chip-row">
+        <button
+          type="button"
+          class="size-chip"
+          *ngFor="let size of commonSizes"
+          [class.active]="hasSize(size)"
+          (click)="toggleSize(size)">
+          {{ size }}
+        </button>
+      </div>
+
+      <div class="custom-size-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Custom sizes</mat-label>
+          <input matInput [(ngModel)]="customSizeInput" [ngModelOptions]="{ standalone: true }" placeholder="28, 30, 32 or Free Size">
+        </mat-form-field>
+        <button type="button" mat-stroked-button (click)="addCustomSizes()">Add</button>
+      </div>
+
+      <mat-chip-set *ngIf="selectedSizes.length" aria-label="Selected sizes">
+        <mat-chip *ngFor="let size of selectedSizes" (removed)="toggleSize(size)">
+          {{ size }}
+          <button matChipRemove aria-label="Remove size">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-chip>
+      </mat-chip-set>
+    </section>
 
     <button mat-raised-button color="primary" type="submit" class="full-width submit-button">
       Add Product

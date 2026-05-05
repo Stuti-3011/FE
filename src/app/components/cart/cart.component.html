@@ -16,6 +16,7 @@
         <div class="item-details">
           <h3>{{ item.product.name }}</h3>
           <p class="item-price">{{ item.product.price | currency:'INR':'symbol':'1.0-0' }}</p>
+          <p class="item-size" *ngIf="item.selectedSize">Size: {{ item.selectedSize }}</p>
           <div class="quantity-control">
             <button mat-icon-button (click)="changeQuantity(item, -1)">
               <mat-icon>remove</mat-icon>

@@ -1,0 +1,55 @@
+.dialog-shell {
+  padding: 20px;
+  min-width: min(92vw, 640px);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+
+.dialog-header p,
+.dialog-header h2 {
+  margin: 0;
+}
+
+.dialog-header p {
+  color: #ec4899;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dialog-header h2 {
+  margin-top: 6px;
+  font-size: 28px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 14px;
+  text-align: left;
+}
+
+thead {
+  background: #0f172a;
+  color: #fff;
+}
+
+tbody tr:nth-child(odd) {
+  background: #f8fafc;
+}

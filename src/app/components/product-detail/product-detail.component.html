@@ -17,8 +17,12 @@
         </button>
       </div>
 
-      <div class="image-panel">
+      <div class="image-panel" (click)="openPreview(selectedImage)">
         <img [src]="selectedImage" [alt]="currentProduct.name">
+        <button type="button" class="preview-trigger">
+          <mat-icon>zoom_in</mat-icon>
+          Preview
+        </button>
       </div>
     </div>
 
@@ -41,6 +45,31 @@
       </div>
 
       <p class="description">{{ currentProduct.description }}</p>
+
+      <div class="size-block" *ngIf="availableSizes.length">
+        <div class="size-heading">
+          <div>
+            <h3>Select size</h3>
+            <p>Choose your preferred fit before adding to cart.</p>
+          </div>
+          <button type="button" mat-button color="primary" (click)="openSizeChart()">Size Chart</button>
+        </div>
+
+        <div class="size-options">
+          <button
+            type="button"
+            class="size-option"
+            *ngFor="let size of availableSizes"
+            [class.active]="size === selectedSize"
+            (click)="selectSize(size)">
+            {{ size }}
+          </button>
+        </div>
+
+        <p class="size-error" *ngIf="showSizeValidation">
+          Size selection is required before adding to cart.
+        </p>
+      </div>
 
       <div class="info-strip">
         <div>
@@ -70,4 +99,49 @@
       </div>
     </div>
   </mat-card>
+
+  <div class="preview-overlay" *ngIf="previewOpen" (click)="closePreview()">
+    <div class="preview-dialog" (click)="$event.stopPropagation()">
+      <div class="preview-toolbar">
+        <div class="zoom-actions">
+          <button type="button" mat-icon-button (click)="zoomOut()" [disabled]="zoomLevel <= 1">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <span>{{ (zoomLevel * 100) | number:'1.0-0' }}%</span>
+          <button type="button" mat-icon-button (click)="zoomIn()" [disabled]="zoomLevel >= 3">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        <button type="button" mat-icon-button (click)="closePreview()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="preview-stage">
+        <button type="button" class="nav-button" (click)="previousPreviewImage()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <div class="preview-image-shell">
+          <img [src]="previewImage" [alt]="currentProduct.name" [style.transform]="'scale(' + zoomLevel + ')'">
+        </div>
+
+        <button type="button" class="nav-button" (click)="nextPreviewImage()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <div class="preview-thumbnails">
+        <button
+          type="button"
+          class="thumb"
+          *ngFor="let image of galleryImages; let i = index"
+          [class.active]="i === previewImageIndex"
+          (click)="previewImageIndex = i">
+          <img [src]="image" [alt]="currentProduct.name">
+        </button>
+      </div>
+    </div>
+  </div>
 </section>
