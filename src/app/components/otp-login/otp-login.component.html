@@ -1,0 +1,55 @@
+<div class="otp-login-container">
+  <mat-card class="otp-login-card">
+    <h2>Continue with OTP</h2>
+    <p class="subtitle">Use your phone number or email to continue securely.</p>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Phone or Email</mat-label>
+      <input
+        matInput
+        name="phoneOrEmail"
+        [(ngModel)]="phoneOrEmail"
+        [disabled]="otpSent || isSendingOtp || isVerifyingOtp"
+        required>
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="full-width"
+      [disabled]="isSendingOtp || isVerifyingOtp || resendCountdown > 0"
+      (click)="sendOtp()">
+      {{ isSendingOtp ? 'Sending OTP...' : 'Send OTP' }}
+    </button>
+
+    <div *ngIf="otpSent" class="otp-step">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>OTP</mat-label>
+        <input matInput name="otp" [(ngModel)]="otp" maxlength="6" required>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="accent"
+        class="full-width"
+        [disabled]="isVerifyingOtp"
+        (click)="verifyOtp()">
+        {{ isVerifyingOtp ? 'Verifying...' : 'Verify OTP' }}
+      </button>
+
+      <button
+        mat-button
+        class="full-width resend-button"
+        [disabled]="resendCountdown > 0 || isSendingOtp"
+        (click)="resendOtp()">
+        {{ resendCountdown > 0 ? 'Resend OTP in ' + resendCountdown + 's' : 'Resend OTP' }}
+      </button>
+    </div>
+
+    <a routerLink="/login" class="fallback-link">Use password login instead</a>
+  </mat-card>
+</div>

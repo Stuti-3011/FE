@@ -65,11 +65,11 @@ export class AppComponent implements OnInit {
       .subscribe((term) => this.productFilterService.setSearchTerm(term));
   }
 
-  isLoggedIn(): boolean {
+  isLoggedIn(): boolean {         
     const result = this.auth.isLoggedIn();
     return result;
   }
-
+       
   logout(): void {
     this.auth.logout();
     this.refreshHeaderState();

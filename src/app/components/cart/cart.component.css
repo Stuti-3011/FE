@@ -129,6 +129,15 @@
   width: 100%;
   min-height: 46px;
   margin-top: 18px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.checkout-button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.checkout-button:disabled {
+  opacity: 0.75;
 }
 
 .empty-card {

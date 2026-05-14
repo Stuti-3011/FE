@@ -6,3 +6,4 @@ export function getProductSizes(product?: Product): string[] {
     .map((item) => item.size?.trim())
     .filter((size): size is string => Boolean(size));
 }
+         

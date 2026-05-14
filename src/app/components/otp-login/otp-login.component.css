@@ -1,0 +1,61 @@
+.otp-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+}
+
+.otp-login-card {
+  max-width: 420px;
+  width: 100%;
+  padding: 24px;
+}
+
+.otp-login-card h2 {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--color-muted);
+  margin: 0 0 20px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.otp-step {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.resend-button {
+  margin-top: 4px;
+}
+
+.fallback-link {
+  display: block;
+  margin-top: 16px;
+  text-align: center;
+  color: #0f766e;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.fallback-link:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  background-color: #f44336;
+  color: white;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  text-align: center;
+}

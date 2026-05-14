@@ -8,6 +8,9 @@ import { CartComponent } from './components/cart/cart.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { WishlistComponent } from './components/wishlist/wishlist.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { PaymentSuccessComponent } from './components/payment-success/payment-success.component';
+import { PaymentFailureComponent } from './components/payment-failure/payment-failure.component';
+import { OtpLoginComponent } from './components/otp-login/otp-login.component';
 
 export const routes: Routes = [
   { path: '', component: ProductListComponent },
@@ -15,12 +18,15 @@ export const routes: Routes = [
   { path: 'products', component: ProductListComponent },
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'cart', component: CartComponent },
+  { path: 'order-success', component: PaymentSuccessComponent },
+  { path: 'order-failure', component: PaymentFailureComponent },
   { path: 'wishlist', component: WishlistComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
 
   { path: 'add', component: ProductFormComponent, canActivate: [authGuard] },
 
   { path: 'login', component: LoginComponent },
+  { path: 'otp-login', component: OtpLoginComponent },
   { path: 'register', component: RegisterComponent },
 
   { path: '**', redirectTo: '' }

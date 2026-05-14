@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 })
 export class CartService {
   private apiUrl = 'https://localhost:7228/api/Cart';
+  private guestCartStorageKey = 'guest_cart_session_id';
   private cartCountSubject = new BehaviorSubject<number>(0);
 
   cartCount$ = this.cartCountSubject.asObservable();
@@ -17,10 +18,29 @@ export class CartService {
 
   private getHeaders(): HttpHeaders {
     const token = this.auth.getToken();
+    const guestCartSessionId = this.getGuestCartSessionId();
+
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: token ? `Bearer ${token}` : ''
+      Authorization: token ? `Bearer ${token}` : '',
+      'X-Cart-Session-Id': guestCartSessionId
     });
+  }
+
+  getGuestCartSessionId(): string {
+    const existingSessionId = localStorage.getItem(this.guestCartStorageKey);
+
+    if (existingSessionId) {
+      return existingSessionId;
+    }
+
+    const newSessionId = typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : `guest-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+
+    localStorage.setItem(this.guestCartStorageKey, newSessionId);
+    console.debug('[CartService] Created guest cart session id', newSessionId);
+    return newSessionId;
   }
 
   addToCart(productId: number, selectedSize?: string) {

@@ -49,7 +49,14 @@
         <span>Total</span>
         <span>{{ getTotalAmount() | currency:'INR':'symbol':'1.0-0' }}</span>
       </div>
-      <button mat-raised-button color="primary" class="checkout-button">Proceed to Checkout</button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="checkout-button"
+        [disabled]="isProcessingCheckout"
+        (click)="proceedToCheckout()">
+        {{ isProcessingCheckout ? 'Processing...' : 'Proceed to Checkout' }}
+      </button>
     </mat-card>
   </div>
 

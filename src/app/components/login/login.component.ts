@@ -40,10 +40,10 @@ export class LoginComponent {
       password: this.password
     }).subscribe({
       next: (res) => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('role', res.role);
+        this.auth.login(res.token, res.role);
         this.notification.showSuccess('Logged in successfully');
-        this.router.navigate(['/products']);
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        this.router.navigateByUrl(returnUrl || '/products');
       },
       error: (err) => {
         console.error('[LoginComponent] Login failed:', err);
